@@ -6,14 +6,14 @@ struct Node {
     struct Node *left, *right;
     int fatBall;
 };
-
+typedef struct Node* ArvoreAVL;
 
 int Altura_Node(struct Node *node);
 int Calcula_Fat_Bal(struct Node *node);
-void Retacao_Esquerda(struct Node *node_rot);
-void Retacao_Direita(struct Node *node_rot);
-int Insere_Node(struct Node *raiz, int data);
-void Remove_Node(struct Node *node);
-void Deleta_Arvore(struct Node *raiz);
+void Retacao_Esquerda(ArvoreAVL *raiz);
+void Retacao_Direita(ArvoreAVL *raiz);
+int Insere_Node(ArvoreAVL *raiz, int data);
+void Deleta_Arvore(struct Node *rootNode);
+void printaEmOrdem(struct Node *rootNode);
 
 #endif //tp2_abp_h

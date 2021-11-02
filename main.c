@@ -1,12 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "abp.h"
 #include "files.h"
 
+void menu() {
+    printf("1 - Ler um arquivo csv\n");
+    printf("2 - Gerar AVL\n");
+    printf("3 - Printar AVL\n");
+    printf("4 - Sair\n");
+}
+
 int main() {
 
     FILE *file = NULL;
-    struct Node *raiz = NULL;  
+    ArvoreAVL *raiz = (ArvoreAVL*)malloc(sizeof(ArvoreAVL));
+    *raiz = NULL;
     char filename[30];
     char number[30] = "";
     char c;
@@ -15,47 +24,67 @@ int main() {
     do {
         menu();
         printf("Digite um numero do Menu: ");
-        scanf("%d", menuNum);
+        scanf("%d", &menuNum);
 
         switch (menuNum)
         {
         case 1:
-            system("cls");
             printf("Digite o nome do arquivo para gerar a ABP: ");
             scanf("%s", filename);
 
             //Abrir o arquivo para leitura
+            if(file != NULL)
+                fclose(file);
             file = readFile(filename);
             if(file == NULL) {
                 printf("O arquivo não foi encontrado!\n");
-                return 0;
             }
             break;
 
         case 2:
-            system("cls");
+            Deleta_Arvore(*raiz);
+            fseek(file, SEEK_SET, 0);
+            
             printf("Gerando AVL...\n");
 
+            int i = 0;
+            do {
+                c = fgetc(file);
+                
+                if(c == ',' || c == '\n' || c == EOF) {
+                    //printf("%s ", number);
+                    Insere_Node(raiz, atoi(number));
+                    memset(number, 0, 30);
+                    i = 0;
+                    continue;
+                }
+                if(c >= 48 && c <= 57) {
+                    number[i] = c; 
+                    i++;
+                }
+
+            } while (c != EOF);
             break;
 
         case 3:
-            system("cls");
             printf("Imprimindo AVL...\n");
-            
+            printaEmOrdem(*raiz);
             break;
 
         case 4:
-            system("cls");
+            Deleta_Arvore(*raiz);
             printf("Saindo do programa...\n");
             break;    
         
         default:
             printf("Digite um número válido!\n");
-            system("pause");
             break;
         }
 
-    } while (menuNum);
+    } while (menuNum != 4);
+
+    fclose(file);
+
 
     return 0; 
 }

@@ -28,39 +28,110 @@ int Calcula_Fat_Bal(struct Node *node)
 }
 
 
-void Retacao_Esquerda(struct Node *node_rot) {
+void Retacao_Esquerda(ArvoreAVL *raiz) {
     struct Node *node;
-    node = node_rot->right;
-    node_rot->right = node->left;
-    node->left = node_rot;
-    node_rot = node;
+    node = (*raiz)->right;
+    (*raiz)->right = node->left;
+    node->left = (*raiz);
+    (*raiz) = node;
+    Calcula_Fat_Bal(*raiz);
 }
 
-void Retacao_Direita(struct Node *node_rot) {
+void Retacao_Direita(ArvoreAVL *raiz) {
     struct Node *node;
-    node = node_rot->left;
-    node_rot->left = node->right;
-    node->right = node_rot;
-    node_rot = node;
+    node = (*raiz)->left;
+    (*raiz)->left = node->right;
+    node->right = (*raiz);
+    (*raiz) = node;
+    Calcula_Fat_Bal(*raiz);
 }
 
-void Retacao_Dupla_Direita(struct Node *node_rot) {
-    Retacao_Esquerda(node_rot->left);
-    Retacao_Direita(node_rot);      
+void Retacao_Dupla_Direita(ArvoreAVL *raiz) {
+    Retacao_Esquerda(&(*raiz)->left);
+    Retacao_Direita(raiz);      
 }
 
-void Retacao_Dupla_Esquerda(struct Node *node_rot) {
-    Retacao_Direita(node_rot->right);
-    Retacao_Esquerda(node_rot);  
+void Retacao_Dupla_Esquerda(ArvoreAVL *raiz) {
+    Retacao_Direita(&(*raiz)->right);
+    Retacao_Esquerda(raiz);  
 }
 
-void Remove_Node(struct Node *node) {
+void Remove_Node(ArvoreAVL *node) {
+  
+
     free(node);
 }
 
-void Remove_Arvore(struct Node* raiz)
+int Insere_Node(ArvoreAVL *raiz, int data)
 {
+  int res;
+  if(*raiz == NULL)
+  {
+    struct Node *novo_node;
+    novo_node = (struct Node*)malloc(sizeof(struct Node));
+    if(novo_node == NULL)
+      return 0;
+
+    novo_node->data = data;
+    novo_node->fatBall = 0;
+    novo_node->left = NULL;
+    novo_node->right =  NULL;
+    *raiz = novo_node;
+    return 1;
+  }
+  
+  struct Node *cursor = *raiz;
+  
+  if(data < cursor->data)
+  {
+    if(res = Insere_Node(&(cursor->left),data) == 1)
+    {
+      if(Calcula_Fat_Bal(cursor) >= 2)
+      {
+        if(data < (*raiz)->left->data)
+          Retacao_Direita(raiz);
+        else
+          Retacao_Dupla_Direita(raiz);
+      }
+    }
+  }
+  else if (data > cursor->data)
+  {
+      if(res = Insere_Node(&(cursor->right),data) == 1)
+      {
+        if(Calcula_Fat_Bal(cursor) >= 2)
+        {
+          if((*raiz)->right->data < data)
+            Retacao_Esquerda(raiz);
+          else
+            Retacao_Dupla_Esquerda(raiz);
+        }
+      }
+    else
+    {
+      printf("Valor duplicado\n");
+      return 0;
+    }
+  }
+  return res;
+}
+
+void printaEmOrdem(struct Node *rootNode) {
+
+    if(rootNode == NULL)
+        return;
+    printaEmOrdem(rootNode->left);
+    printf("%d fat_bal = (%d)\n",rootNode->data, rootNode->fatBall);
+    printaEmOrdem(rootNode->right);
     
+}
 
+void Deleta_Arvore(struct Node *rootNode) {
 
+    if(rootNode == NULL)
+        return;
+    Deleta_Arvore(rootNode->left);
+    free(rootNode);
+    Deleta_Arvore(rootNode->right);
+    
 }
