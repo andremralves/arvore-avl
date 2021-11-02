@@ -43,6 +43,7 @@ int main() {
 
         case 2:
             Deleta_Arvore(*raiz);
+            *raiz = NULL;
             fseek(file, SEEK_SET, 0);
             
             printf("Gerando AVL...\n");
@@ -52,7 +53,6 @@ int main() {
                 c = fgetc(file);
                 
                 if(c == ',' || c == '\n' || c == EOF) {
-                    //printf("%s ", number);
                     Insere_Node(raiz, atoi(number));
                     memset(number, 0, 30);
                     i = 0;
@@ -73,6 +73,7 @@ int main() {
 
         case 4:
             Deleta_Arvore(*raiz);
+            free(raiz);
             printf("Saindo do programa...\n");
             break;    
         

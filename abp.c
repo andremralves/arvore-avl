@@ -95,7 +95,7 @@ int Insere_Node(ArvoreAVL *raiz, int data)
       }
     }
   }
-  else if (data > cursor->data)
+  else if(data > cursor->data)
   {
       if(res = Insere_Node(&(cursor->right),data) == 1)
       {
@@ -107,11 +107,11 @@ int Insere_Node(ArvoreAVL *raiz, int data)
             Retacao_Dupla_Esquerda(raiz);
         }
       }
-    else
-    {
-      printf("Valor duplicado\n");
-      return 0;
-    }
+  }
+  else
+  {
+    printf("valor duplicado\n");
+    return 0;
   }
   return res;
 }
@@ -131,7 +131,7 @@ void Deleta_Arvore(struct Node *rootNode) {
     if(rootNode == NULL)
         return;
     Deleta_Arvore(rootNode->left);
-    free(rootNode);
     Deleta_Arvore(rootNode->right);
-    
+    free(rootNode);
+    rootNode = NULL;
 }
